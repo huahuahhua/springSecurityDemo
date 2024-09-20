@@ -1,4 +1,4 @@
-package com.chl.teach.springsecuritydemo.service.Impl;
+package com.chl.teach.springsecuritydemo.service.Impl.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chl.teach.springsecuritydemo.domain.LoginUser;
@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,8 +37,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         //TODO: 查询权限信息封装到LoginUser中
+        List<String> list = new ArrayList<>(Arrays.asList("test", "adminAuth", "huanfAuth"));
 
         // 将用户信息封装到UserDetails实现类中
-        return new LoginUser(user);
+        return new LoginUser(user,list);
     }
 }

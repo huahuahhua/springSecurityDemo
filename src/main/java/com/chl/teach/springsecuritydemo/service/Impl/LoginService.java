@@ -11,4 +11,7 @@ import org.springframework.stereotype.Service;
 
 public interface LoginService {
     ResponseResult login(User user);
+
+    ResponseResult yylogout();
+
 }

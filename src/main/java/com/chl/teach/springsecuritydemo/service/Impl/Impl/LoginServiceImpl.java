@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author: Chenghl
@@ -35,6 +36,9 @@ public class LoginServiceImpl implements LoginService {
 
         // 2.通过AuthenticationManager的authenticate方法来进行用户认证
         Authentication authenticated = authenticationManager.authenticate(authenticationToken);
+        if (Objects.isNull(authenticated)) {
+            throw new RuntimeException("用户名或密码错误");
+        }
 
         // 3.在Authentication中获取用户信息
         LoginUser loginUser = (LoginUser) authenticated.getPrincipal();
@@ -47,5 +51,14 @@ public class LoginServiceImpl implements LoginService {
         HashMap<Object, Object> hashMap = new HashMap<>();
         hashMap.put("token", jwt);
         return new ResponseResult(200, "登录成功", hashMap);
+    }
+
+    @Override
+    public ResponseResult yylogout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long id = loginUser.getUser().getId();
+        redisCache.deleteObject("login:" + id);
+        return new ResponseResult(200, "注销成功");
     }
 }
